@@ -1,9 +1,12 @@
 package helha.tems.helha_langue.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -13,15 +16,17 @@ public class QCMQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "QCMQuestion_id")
-    private Long qcmQuestionId;
+    private int qcmQuestionId;
 
     @Column(name = "QuestionNom")
     private String questionNom;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Sequence_id", referencedColumnName = "sequence_id")
+    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "sequence_id")
     private Sequence sequence;
 
-    // Getters and setters, constructors, etc.
+    @OneToMany(mappedBy = "qcmQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Response> responses = new HashSet<>();
 }
 

@@ -27,15 +27,16 @@ public class User {
     private String email;
 
     @Column(name = "nom")
-    private String nom;
+    private String LastName;
 
     @Column(name = "prenom")
-    private String prenom;
+    private String FirstName;
 
+    @JsonIgnore
     @Column(name = "est_professeur",insertable = false, updatable = false)
-    private String estProfesseur;
+    private String IsTeacher;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
+
     @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinTable(
             name = "utilisateur_sequence",

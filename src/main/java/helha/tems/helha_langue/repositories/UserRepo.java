@@ -12,13 +12,12 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<User,Integer> {
 
 
-    @Query("SELECT u FROM User u WHERE u.estProfesseur= 'STUDENT'")
+    @Query("SELECT u FROM User u WHERE u.IsTeacher= 'STUDENT'")
     public List<User> findAllStudents();
 
-    @Query("SELECT u FROM User u WHERE u.estProfesseur= 'TEACHER'")
+    @Query("SELECT u FROM User u WHERE u.IsTeacher= 'TEACHER'")
     public List<User> findAllTeachers();
 
-    @Query("SELECT u FROM User u WHERE u.email= email")
     Optional<User> findByEmail(String email);
 
 }

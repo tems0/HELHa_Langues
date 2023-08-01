@@ -1,6 +1,7 @@
 package helha.tems.helha_langue.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.tomcat.util.http.parser.MediaType;
@@ -18,10 +19,10 @@ public class Sequence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Sequence_id")
-    private Long sequenceId;
+    private int sequenceId;
 
     @Column(name = "Langues")
-    private String langues;
+    private String languages;
 
     @Column(name = "AudioMP3")
     private String audioMP3;
@@ -36,12 +37,16 @@ public class Sequence {
     private String timer;
 
     @Column(name = "ScoreObtenu")
-    private Double scoreObtenu;
+    private Double scoreGot;
 
     @Column(name = "Completé")
-    private Boolean complete;
+    private Boolean completed;
 
-    @ManyToMany(mappedBy = "sequences")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "sequences",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<User> Users = new HashSet<>();
+
+    @OneToMany(mappedBy = "sequence", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<QCMQuestion> qcmQuestions = new HashSet<>();
 }
 
