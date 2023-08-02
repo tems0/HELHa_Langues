@@ -1,11 +1,11 @@
 package helha.tems.helha_langue.restControllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import helha.tems.helha_langue.config.JwUtils;
 import helha.tems.helha_langue.models.Sequence;
 import helha.tems.helha_langue.models.User;
-import helha.tems.helha_langue.services.EmailService;
-import helha.tems.helha_langue.services.IUserService;
-import helha.tems.helha_langue.services.UserDetailsServiceImpl;
+import helha.tems.helha_langue.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -28,6 +29,10 @@ public class UserRestController {
     IUserService userService;
     @Autowired
     EmailService mailService;
+    @Autowired
+    MP3ServiceDbImpl mp3Service;
+    @Autowired
+    MP4ServiceDbImpl mp4Service;
     private final JwUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -40,6 +45,8 @@ public class UserRestController {
     public List<User> getAllTeachers(){
         return  userService.findAllTeachers();
     }
+
+
 
     @GetMapping("/AllStudents")
     public List<User> getAllStudents(){
@@ -109,21 +116,49 @@ public class UserRestController {
     }
 
     @PostMapping("/{email}/sequences")
-    public ResponseEntity<User> addSequenceToUser(@PathVariable String email, @RequestBody Sequence sequence) {
+    public ResponseEntity<String> addSequenceToUser(@PathVariable String email,@RequestParam("file") MultipartFile file ,
+                                                   @RequestParam("seq") String sequenceJson) throws JsonProcessingException {
         // Recherche l'utilisateur existant par son email
         Optional<User> optionalUser = userService.findByEmail(email);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
 
         // Vérifie si l'utilisateur existe
         if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         User user = optionalUser.get();
+        // Vérifier si l'email se termine par "student.helha.be"
+        if (user.getEmail().endsWith("student.helha.be")) {
+            sequence.setCompleted(true);
+        } else if(user.getEmail().endsWith("helha.be")){
+            sequence.setCompleted(false);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+        // Verification du import
+
+        if (file.getOriginalFilename().endsWith(".mp3")) {
+            String response = mp3Service.uploadMP3(file);
+            if(!response.startsWith("src"))
+                return ResponseEntity.status(400).body(response);
+            sequence.setAudioMP3(response);
+        } else if(file.getOriginalFilename().endsWith(".mp4")){
+            String response = mp4Service.uploadMP4(file);
+            if(!response.startsWith("src"))
+                return ResponseEntity.status(400).body(response);
+            sequence.setVideoMP4(response);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
         // Ajoutez la séquence à l'utilisateur
         user.getSequences().add(sequence);
 
         // Enregistrez les modifications dans la base de données
         userService.saveUser(user);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(user.toString());
     }
 }
