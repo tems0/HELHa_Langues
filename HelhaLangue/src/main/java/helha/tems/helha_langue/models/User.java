@@ -32,7 +32,7 @@ public class User {
 
     @JsonIgnore
     @Column(name = "est_professeur",insertable = false, updatable = false)
-    private String IsTeacher;
+    private String est_professeur;
 
 
     @ManyToMany(cascade = {CascadeType.ALL, CascadeType.REMOVE})

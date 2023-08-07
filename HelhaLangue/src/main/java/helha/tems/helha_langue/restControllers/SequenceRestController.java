@@ -1,17 +1,22 @@
 package helha.tems.helha_langue.restControllers;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import helha.tems.helha_langue.models.QCMQuestion;
 import helha.tems.helha_langue.models.Response;
 import helha.tems.helha_langue.models.Sequence;
 import helha.tems.helha_langue.models.User;
 import helha.tems.helha_langue.services.IQCMQuestionService;
 import helha.tems.helha_langue.services.ISequenceService;
+import helha.tems.helha_langue.services.MP3ServiceDbImpl;
+import helha.tems.helha_langue.services.MP4ServiceDbImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +31,10 @@ public class SequenceRestController {
 
     @Autowired
     IQCMQuestionService qcmService;
+    @Autowired
+    MP3ServiceDbImpl mp3Service;
+    @Autowired
+    MP4ServiceDbImpl mp4Service;
 
     @GetMapping("/AllSequences")
     public  ResponseEntity<List<Sequence>> getAll(){
@@ -55,11 +64,36 @@ public class SequenceRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Optional<Sequence>> updateSequence(@PathVariable int id, @RequestBody Sequence sequence)
+    public ResponseEntity<Optional<Sequence>> updateSequence(@PathVariable int id, @RequestParam("file") MultipartFile file,
+                                                             @RequestParam("seq") String sequenceJson)
     {
         try {
+            //pour creer un objet sequence
+            ObjectMapper objectMapper = new ObjectMapper();
+            Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
             final Sequence seq = sequenceService.findById(id);
+            sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
             if (seq != null) {
+                // Verification du import
+
+                if (file.getOriginalFilename().endsWith(".mp3")) {
+                    // Créer un objet File avec le chemin du fichier
+                    File fileseq = new File(seq.getAudioMP3());
+                    // Obtenir le nom du fichier en utilisant la méthode getName()
+                    String fileName = fileseq.getName();
+                    String response = mp3Service.updateMP3(fileName,file);
+                    sequence.setAudioMP3(response);
+                } else if(file.getOriginalFilename().endsWith(".mp4")){
+                    // Créer un objet File avec le chemin du fichier
+                    File fileseq = new File(seq.getVideoMP4());
+                    // Obtenir le nom du fichier en utilisant la méthode getName()
+                    String fileName = fileseq.getName();
+                    String response = mp4Service.updateMP4(fileName,file);
+                    sequence.setVideoMP4(response);
+                }
+                else{
+                    return ResponseEntity.notFound().build();
+                }
                 return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, sequence)));
             }
         } catch (Exception ex) {
@@ -71,12 +105,34 @@ public class SequenceRestController {
     public ResponseEntity<String> deleteSequence(@PathVariable int id)
     {
         Sequence sequence = sequenceService.findById(id);
-
         if (sequence == null) {
             return ResponseEntity.notFound().build();
         }
-        sequenceService.delete(sequence);
-        return ResponseEntity.ok("Sequence and references deleted successfully.");
+        // Verification du import
+        if (sequence.getAudioMP3().endsWith(".mp3")) {
+            // Créer un objet File avec le chemin du fichier
+            File file = new File(sequence.getAudioMP3());
+            // Obtenir le nom du fichier en utilisant la méthode getName()
+            String fileName = file.getName();
+            String response = mp3Service.deleteMP3(fileName);
+            if(!response.startsWith("src"))
+                return ResponseEntity.status(400).body(response);
+            sequenceService.delete(sequence);
+            return ResponseEntity.ok("Sequence and references deleted successfully.");
+        } else if(sequence.getVideoMP4().endsWith(".mp4")){
+            // Créer un objet File avec le chemin du fichier
+            File file = new File(sequence.getVideoMP4());
+            // Obtenir le nom du fichier en utilisant la méthode getName()
+            String fileName = file.getName();
+            String response = mp4Service.deleteMP4(fileName);
+            if(!response.startsWith("src"))
+                return ResponseEntity.status(400).body(response);
+            sequenceService.delete(sequence);
+            return ResponseEntity.ok("Sequence and references deleted successfully.");
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{sequenceId}/addQuestionWithResponses")

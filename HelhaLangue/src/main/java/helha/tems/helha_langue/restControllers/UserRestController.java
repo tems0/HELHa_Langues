@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import helha.tems.helha_langue.config.JwUtils;
 import helha.tems.helha_langue.models.Sequence;
+import helha.tems.helha_langue.models.Student;
+import helha.tems.helha_langue.models.Teacher;
 import helha.tems.helha_langue.models.User;
 import helha.tems.helha_langue.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200/", allowedHeaders = "*")
@@ -54,30 +59,33 @@ public class UserRestController {
         return  userService.findAllStudents();
     }
     @GetMapping("login/User")
-    public ResponseEntity<String> authenticateEmail(@RequestParam String token ,String email) {
-
+    public ResponseEntity<Map<String, Object>> authenticateEmail(@RequestParam String token ,String email) {
+        Map<String, Object> response = new HashMap<>();
         try {
             final UserDetails user = userDetailsService.loadUserByUsername(email);
             if (user != null) {
                 boolean n= jwtUtils.isTokenValid(token,user);
                 if (n)
                 {
-                    return ResponseEntity.status(200).body("connecté");
+                    response.put("message", "connecté");
+                    return ResponseEntity.status(200).body(response);
                 }
                 else
                 {
-                    return ResponseEntity.status(400).body("echec de connexion -> token erroné");
+                    response.put("message", "echec de connexion -> token erroné");
+                    return ResponseEntity.status(400).body(response);
                 }
             }
         } catch (Exception ex) {
-            return ResponseEntity.status(400).body("echec de connexion -> Email non existant");
+            response.put("message", "echec de connexion -> Email non existant");
+            return ResponseEntity.status(400).body(response);
         }
 
 
         return null;
     }
     @GetMapping("login")
-    public ResponseEntity<String> authenticate(@RequestParam String email) {
+    public ResponseEntity<Map<String, Object>> authenticate(@RequestParam String email) {
         UserDetails user = null;
         try {
             user = userDetailsService.loadUserByUsername(email);
@@ -86,11 +94,22 @@ public class UserRestController {
                 mailService.sendEmail(email,
                         "Connexion via Email", "votre token  -> "+token);
                 boolean n= jwtUtils.isTokenValid(token,user);
-                return ResponseEntity.status(200).body(token + "TON TOKEN BG");
+                // Créez un objet Map pour représenter les données à renvoyer
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", token);
+                response.put("message", "Connexion réussie. Voici votre token.");
+                return ResponseEntity.status(200).body(response);
             }
         } catch (Exception ex) {
             if(user == null)
-            return ResponseEntity.status(400).body("echec de connexion -> Email non existant");
+            {
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", null);
+                response.put("message", "Échec de connexion. Email non existant.");
+
+                // Renvoyez la réponse JSON avec le statut 400 Bad Request
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
         }
         return null;
     }
@@ -99,19 +118,28 @@ public class UserRestController {
     public ResponseEntity<User> post(@RequestBody User newUser){
         // Convertir l'email en minuscules (au cas où l'utilisateur aurait entré l'email en majuscules)
         newUser.setEmail(newUser.getEmail().toLowerCase());
-
         // Vérifier si l'email se termine par "student.helha.be"
         if (newUser.getEmail().endsWith("student.helha.be")) {
-            newUser.setIsTeacher("STUDENT");
+            newUser.setEst_professeur("STUDENT");
+            Student student = new Student();
+            student.setEmail(newUser.getEmail());
+            student.setLastName(newUser.getLastName());
+            student.setFirstName(newUser.getFirstName());
+            userService.saveUser(student); // Enregistrez l'étudiant dans la base de données
+            return ResponseEntity.ok(student);
         } else if(newUser.getEmail().endsWith("helha.be")){
-            newUser.setIsTeacher("TEACHER");
+            newUser.setEst_professeur("TEACHER");
+            newUser.setEst_professeur("TEACHER");
+            Teacher teacher = new Teacher();
+            teacher.setEmail(newUser.getEmail());
+            teacher.setLastName(newUser.getLastName());
+            teacher.setFirstName(newUser.getFirstName());
+            userService.saveUser(teacher);
+            return ResponseEntity.ok(teacher);
         }
         else{
             return ResponseEntity.notFound().build();
         }
-
-        userService.saveUser(newUser);
-        return ResponseEntity.status(201).body(newUser);
 
     }
 

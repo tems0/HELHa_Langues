@@ -82,7 +82,7 @@ public class MP3ServiceDbImpl implements IMP3Service{
             // Supprimer le fichier du système de fichiers
             Files.delete(filePath);
 
-            return "Le fichier MP3 a été supprimé avec succès : " + fileName;
+            return filePath.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return "Une erreur s'est produite lors de la suppression du fichier MP3.";
