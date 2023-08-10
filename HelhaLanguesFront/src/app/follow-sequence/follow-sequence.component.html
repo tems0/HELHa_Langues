@@ -1,12 +1,20 @@
-<div *ngIf="audioUrl" class="audio-player" class="player-container">
-  <audio controls>
-    <source [src]="audioUrl" type="audio/mpeg">
-    Votre navigateur ne supporte pas l'élément audio.
-  </audio>
+
+
+<div class="navbar">
+  <div class="middle-links">
+    <div *ngIf="audioUrl" class="audio-player" class="player-container" style="margin: 10px;">
+      <audio controls>
+        <source [src]="audioUrl" type="audio/mpeg">
+        Votre navigateur ne supporte pas l'élément audio.
+      </audio>
+    </div>
+    <div *ngIf="videoBlobUrl" class="video-player"  class="player-container" style="margin: 10px;">
+      <video controls style="max-width: 100%; max-height: 550px;">
+        <source [src]="videoBlobUrl" type="video/mp4">
+        Votre navigateur ne supporte pas l'élément vidéo.
+      </video>
+    </div>
+    <button (click)="goToQcm()" class="btn-container" pButton pRipple label="Repondre au question"></button>
+  </div>
 </div>
-<div *ngIf="videoBlobUrl" class="video-player" class="player-container">
-  <video controls>
-    <source [src]="videoBlobUrl" type="video/mp4">
-    Votre navigateur ne supporte pas l'élément vidéo.
-  </video>
-</div>
+

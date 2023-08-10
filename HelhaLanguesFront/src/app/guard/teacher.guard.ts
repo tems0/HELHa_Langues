@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TeacherGuard implements CanActivate {
+
+  constructor(private router: Router) {}
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): boolean | UrlTree {
+
+    if (sessionStorage.getItem("email")!=null&&sessionStorage.getItem("email")!.includes("helha.be")) {
+      const role = sessionStorage.getItem("role");
+      if (role === 'Teacher') {
+        return true;
+      } else {
+        return this.router.createUrlTree(['/not-autorised']);
+      }
+    } else {
+      return this.router.createUrlTree(['/home']);
+    }
+  }
+
+}

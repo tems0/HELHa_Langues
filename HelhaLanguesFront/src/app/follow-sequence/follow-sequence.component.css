@@ -4,3 +4,40 @@
   align-items: center;
   height: 50%;
 }
+.btn-container {
+  margin-top: 10px;
+  margin-right: 650px;
+  margin-left: 650px;
+}
+
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .left-link {
+  display: flex;
+  align-items: center;
+  order: 1;
+}
+
+.navbar .left-link {
+  width: 80px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.navbar .middle-links {
+  order: 2;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.navbar .right-link {
+  order: 3;
+}
+

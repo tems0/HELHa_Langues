@@ -10,7 +10,6 @@ export class LoginTokenComponent implements OnInit{
 
   @ViewChild('token', { static: false }) tokenInput!: ElementRef ;
   ngOnInit(): void {
-    console.log(sessionStorage.getItem("salut"));
   }
   email!:string;
   inProgress : boolean=false;
@@ -29,15 +28,18 @@ export class LoginTokenComponent implements OnInit{
       next: (data) => {
         this.inProgress=false;
         console.log(data);
-        if(this.email.includes("@student.helha.be")){
+        if(data.message=="STUDENT"){
+          sessionStorage.setItem("email",this.email)
           sessionStorage.setItem("role","Student")
+          location.replace("/home")
         }
         else{
+          sessionStorage.setItem("email",this.email)
           sessionStorage.setItem("role","Teacher")
-        }
-        sessionStorage.setItem("email",this.email)
-        if(data.message=="connecté")
           location.replace("/home")
+        }
+
+
     },
     error: (err) => {
       console.log(err);

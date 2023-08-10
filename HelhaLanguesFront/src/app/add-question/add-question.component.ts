@@ -11,7 +11,7 @@ import { Reponse } from '../model/reponse';
 })
 export class AddQuestionComponent implements OnInit{
 
-  answers: string[] = [''];
+  answers: string[] = ['',''];
   sequenceId:number=0;
   responses: Reponse[]=[];
 
@@ -50,22 +50,25 @@ export class AddQuestionComponent implements OnInit{
         responseCorrect: inputElement
       };
       this.responses.push(newResponse);
-      console.log(this.responses);
+    }
+    const hasCorrectResponse = this.responses.some(response => response.responseCorrect === true);
 
-      console.log('Réponse ' + (i + 1) + ':', answerValue);
-      console.log('Case à cocher ' + (i + 1) + ':', inputElement);
+    if (hasCorrectResponse) {
+      this.sequenceService.addQuestion(this.sequenceId,questionValue,this.responses).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'question ajouté' });
+          location.replace("/list-sequences");
+        },
+        error: (err) => {
+          console.log(err);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'erreur' });
+        }
+      });
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Veillez mettre au moins une bonne reponse' });
     }
 
-    this.sequenceService.addQuestion(this.sequenceId,questionValue,this.responses).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product is updated' });
-        location.replace("/list-sequences");
-      },
-      error: (err) => {
-        console.log(err);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid Price' });
-      }
-    });
+
   }
 }

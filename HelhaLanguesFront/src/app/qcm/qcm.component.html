@@ -1,0 +1,39 @@
+
+
+<body>
+  <div class="overlay" *ngIf="GotScore">
+    <div class="qcm-container">
+      <h1>Votre score</h1>
+      <div class="qcm-question">
+        <p class="question">{{ scoreObtenu}} / {{score}}</p>
+        <ul class="responses">
+
+        </ul>
+      </div>
+      <button (click)="Retour()" class="submit-button">retour</button>
+    </div>
+  </div>
+  <div class="qcm-container">
+    <div class="timer">
+      Temps restant: {{ getFormattedTime() }}
+    </div>
+    <h1>Questionnaire à Choix Multiple</h1>
+    <div *ngFor="let question of questions let i = index"   class="qcm-question">
+      <p class="question">{{ question.questionNom }}</p>
+      <ul class="responses">
+        <li *ngFor="let response of question.responses let j = index" class="response">
+          <label class="checkbox-label">
+            <p-checkbox  [id]="'checkbox' + i+''+j" [name]="'checkbox' + i"
+          [binary]="true"
+          inputId="binary"></p-checkbox>
+          {{ response.response }}
+          </label>
+        </li>
+      </ul>
+    </div>
+    <button (click)="ValidQcm()" class="submit-button">Soumettre</button>
+  </div>
+</body>
+
+
+

@@ -30,6 +30,16 @@ export class SequenceService {
     return this.http.post<any>(url, formData, { headers: headers });
   }
 
+  addSequencesWithoutFile(email: string, sequenceJson: string): Observable<any> {
+    const url = `http://localhost:8080/api/users/${email}/sequencesWithoutFile`;
+    const headers = new HttpHeaders(); // Pas besoin de spécifier content-type, HttpClient s'en occupe automatiquement
+
+    // Créez un objet FormData pour envoyer le fichier et la chaîne JSON en tant que corps de la requête
+    const formData = new FormData();
+    formData.append('seq', sequenceJson);
+    return this.http.post<any>(url, formData, { headers: headers });
+  }
+
   addQuestion(sequenceId: number, qcmQuestion: string,responses : Reponse[]): Observable<Sequence> {
     const url = `http://localhost:8080/api/sequences/${sequenceId}/addQuestionWithResponses`;
 

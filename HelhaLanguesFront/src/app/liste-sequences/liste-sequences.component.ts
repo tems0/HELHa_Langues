@@ -33,12 +33,12 @@ export class ListeSequencesComponent implements OnInit{
 
   ngOnInit(): void {
     if(sessionStorage.getItem("role")!=null&&sessionStorage.getItem("role")!="Student"){
-      this.isStudent=true;
-    }
-    else if(sessionStorage.getItem("role")!=null&&sessionStorage.getItem("role")!="Teacher"){
       this.isStudent=false;
     }
-
+    else if(sessionStorage.getItem("role")!=null&&sessionStorage.getItem("role")!="Teacher"){
+      this.isStudent=true;
+    }
+    sessionStorage.removeItem('qcmStartTime');
     this.sequenceService.GetAllSequences().subscribe({
       next: (data) => {
         this.sequences =data;

@@ -16,7 +16,7 @@ export class AddSequenceComponent implements OnInit{
 
   @ViewChild('seqLangues', { static: false }) seqLanguesInput!: ElementRef ;
   @ViewChild('seqtimer', { static: false }) seqtimerInput!: ElementRef ;
-  @ViewChild('seqscore', { static: false }) seqscoreInput!: ElementRef ;
+
 
   ngOnInit(): void {
 
@@ -41,13 +41,12 @@ export class AddSequenceComponent implements OnInit{
     this.error="";
     const seqLangues = this.seqLanguesInput?.nativeElement.value;
     const seqtimer = this.seqtimerInput?.nativeElement.value;
-    const seqscore = this.seqscoreInput?.nativeElement.value;
 
     const updatedSequence = {
       languages: seqLangues,
       audioMP3: 'string',
       videoMP4: 'string',
-      score: parseInt(seqscore, 10),
+      score: 0,
       timer: seqtimer,
       scoreGot: 0,
       completed:false

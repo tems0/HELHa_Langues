@@ -1,7 +1,7 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
-<header class="navbar">
-  <nav>
+<header >
+  <nav class="navbar">
     <div class="left-link">
       <a routerLink="/list-recette">
         <img [src]="'assets/512_x_512_-_PNG__3_-removebg-preview.png'" alt="Logo" class="logo">
@@ -9,16 +9,11 @@
     </div>
 
     <div class="middle-links" *ngIf="isStudent && isLogin">
-      <button class="nav-button" routerLink="/list-recette">etudiant</button>
-      <button class="nav-button" routerLink="/recette">Créer une recette</button>
-      <button class="nav-button" routerLink="/favoris">Mes favoris</button>
-      <button class="nav-button" routerLink="/mes-recettes">Mes recettes</button>
+      <button class="nav-button" routerLink="/list-sequences">Liste des sequences</button>
     </div>
     <div class="middle-links" *ngIf="!isStudent && isLogin">
       <button class="nav-button" routerLink="/list-sequences">Liste des sequences</button>
       <button class="nav-button" routerLink="/add-sequence">ajouter une sequence</button>
-      <button class="nav-button" routerLink="/">test</button>
-      <button class="nav-button" routerLink="/">a voir</button>
     </div>
 
 

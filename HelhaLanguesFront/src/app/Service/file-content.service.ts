@@ -11,7 +11,7 @@ export class FileContentService {
 
 
   getMP4File(fileName: string): Observable<HttpResponse<Blob>> {
-    const url = `http://localhost:8080/api/mp4/getMP4/${fileName}`; // Remplacez par l'URL correcte vers votre backend
+    const url = `http://localhost:8080/api/mp4/getMP4/${fileName}`;
     const headers = new HttpHeaders({
       'Content-Type': 'video/mp4',
     });
@@ -23,7 +23,7 @@ export class FileContentService {
     });
   }
   getMP3File(fileName: string): Observable<HttpResponse<Blob>> {
-    const url = `http://localhost:8080/api/mp3/getMP3/${fileName}`; // Remplacez par l'URL correcte vers votre backend
+    const url = `http://localhost:8080/api/mp3/getMP3/${fileName}`;
     const headers = new HttpHeaders({
       'Content-Type': 'audio/mpeg',
     });

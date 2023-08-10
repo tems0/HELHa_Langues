@@ -129,3 +129,53 @@ input[type="password"] {
 }
 
 
+.navbar {
+  background: rgb(158,158,158);
+  background: linear-gradient(0deg, rgba(158,158,158,1) 0%, rgba(219,219,219,1) 100%);
+  padding: 5px;
+}
+
+.navbar nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .left-link {
+  display: flex;
+  align-items: center;
+  order: 1;
+}
+
+.navbar .left-link .logo {
+  width: 80px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.navbar .middle-links {
+  order: 2;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.navbar .right-link {
+  order: 3;
+}
+
+.nav-button {
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: rgb(233,213,171);
+  color: #fff;
+}
+

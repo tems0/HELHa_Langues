@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SequenceService } from '../Service/sequence.service';
 import { Sequence } from '../model/sequence';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileContentService } from '../Service/file-content.service';
+import { Qcmquestion } from '../model/qcmquestion';
 
 @Component({
   selector: 'app-follow-sequence',
@@ -15,12 +16,13 @@ export class FollowSequenceComponent implements OnInit{
   audioUrl!: SafeResourceUrl;
   audioBlobUrl: any;
   videoBlobUrl: any;
-
-  constructor(private route: ActivatedRoute, private contentFile :FileContentService,
+  questions:Qcmquestion[]=[];
+  time:number=0;
+  sequence!:Sequence;
+  constructor(private route: ActivatedRoute,private router: Router, private contentFile :FileContentService,
     private sequenceService: SequenceService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
-
     const sequenceIdString = this.route.snapshot.paramMap.get('id');
     const sequenceId = parseInt(sequenceIdString!, 10);
     this.getContentUrlFromBackend(sequenceId);
@@ -35,7 +37,10 @@ export class FollowSequenceComponent implements OnInit{
   getContentUrlFromBackend(seq:number) {
     this.sequenceService.getSequence(seq).subscribe({
       next: (data) => {
-
+        this.sequence=data;
+        this.questions=data.qcmQuestions
+        this.time=parseInt(data.timer, 10);;
+        console.log(this.questions);
         if(data.audioMP3!="string")
         {
           console.log(this.extractFileNameFromPath(data.audioMP3));
@@ -50,7 +55,6 @@ export class FollowSequenceComponent implements OnInit{
               console.log("erreur");
             }
           });;
-          //this.audioUrl = this.sanitizer.bypassSecurityTrustResourceUrl(mp3Url);
         }
         else{
           console.log(this.extractFileNameFromPath(data.videoMP4));
@@ -70,5 +74,17 @@ export class FollowSequenceComponent implements OnInit{
       }
     });
 
+  }
+
+
+  goToQcm()
+  {
+    this.router.navigate(['/qcm'], {
+      queryParams: {
+        questions: JSON.stringify(this.questions),
+        time: this.time.toString(),
+        sequence: JSON.stringify(this.sequence)
+      }
+    });
   }
 }

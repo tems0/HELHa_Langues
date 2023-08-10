@@ -32,6 +32,8 @@ import { ToastModule } from 'primeng/toast';
 import { TreeTableModule } from 'primeng/treetable';
 import { AddQuestionComponent } from './add-question/add-question.component';
 import { ModifyQuestionComponent } from './modify-question/modify-question.component';
+import { QcmComponent } from './qcm/qcm.component';
+import { NotAutorisedComponent } from './not-autorised/not-autorised.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -43,7 +45,9 @@ import { ModifyQuestionComponent } from './modify-question/modify-question.compo
     HomeComponent,
     FollowSequenceComponent,
     AddQuestionComponent,
-    ModifyQuestionComponent
+    ModifyQuestionComponent,
+    QcmComponent,
+    NotAutorisedComponent
   ],
   imports: [
     BrowserModule,
