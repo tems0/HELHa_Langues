@@ -189,7 +189,7 @@ public class SequenceRestController {
             // Ajoutez la question à la séquence
             qcmQuestion.setSequence(sequence);
             sequence.getQcmQuestions().add(qcmQuestion);
-
+            sequence.setScore(sequence.getQcmQuestions().size());//une question un point
             // Enregistrez les modifications dans la base de données
             sequenceService.addQuestion(sequence);
 

@@ -67,7 +67,13 @@ public class UserRestController {
                 boolean n= jwtUtils.isTokenValid(token,user);
                 if (n)
                 {
-                    response.put("message", "connecté");
+                    Optional<User> optionalUser  = userService.findByEmail(email);
+                    User userLoged = optionalUser.get();
+                    String u =userLoged.getEst_professeur();
+                    if(u.equals("STUDENT"))
+                        response.put("message", "STUDENT");
+                    else
+                        response.put("message", "TEACHER");
                     return ResponseEntity.status(200).body(response);
                 }
                 else
@@ -194,6 +200,51 @@ public class UserRestController {
         userService.saveUser(user);
         res.put("token", null);
         res.put("message", "sequence creer");
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/{email}/sequencesWithoutFile")
+    public ResponseEntity<Map<String, Object>> addSequenceToUserWithoutFile(@PathVariable String email,
+                                                                 @RequestParam("seq") String sequenceJson) throws JsonProcessingException {
+        // Recherche l'utilisateur existant par son email
+        Optional<User> optionalUser = userService.findByEmail(email);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
+
+        // Vérifie si l'utilisateur existe
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        User user = optionalUser.get();
+        // Vérifier si l'email se termine par "student.helha.be"
+        if (user.getEmail().endsWith("student.helha.be")) {
+            sequence.setCompleted(true);
+        } else if(user.getEmail().endsWith("helha.be")){
+            sequence.setCompleted(false);
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+        boolean sequenceExists = false;
+        for (Sequence existingSequence : user.getSequences()) {
+            if (existingSequence.getSequenceId() == sequence.getSequenceId()) {
+                // Mise à jour de la séquence existante
+                existingSequence.setCompleted(sequence.getCompleted());
+                existingSequence.setScoreGot(sequence.getScoreGot());
+                sequenceExists = true;
+                break;
+            }
+        }
+        // Si la séquence n'existe pas, l'ajouter à la liste
+        if (!sequenceExists) {
+            user.getSequences().add(sequence);
+        }
+        // Verification du import
+        Map<String, Object> res = new HashMap<>();
+
+        // Enregistrez les modifications dans la base de données
+        userService.saveUser(user);
+        res.put("message", "sequence terminé pour l'etudiant");
         return ResponseEntity.ok(res);
     }
 }
