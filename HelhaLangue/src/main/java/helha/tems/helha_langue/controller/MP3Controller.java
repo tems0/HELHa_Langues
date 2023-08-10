@@ -4,6 +4,8 @@ import helha.tems.helha_langue.services.MP3ServiceDbImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:4200/", allowedHeaders = "*")
@@ -34,7 +38,7 @@ public class MP3Controller {
 
     // Limite de la taille du fichier en bytes (10 Mo)
     private static final long MAX_FILE_SIZE = 50 * 1024 * 1024;
-
+    private static Map<String, ClassPathResource> resourceCache = new HashMap<>();
     @Autowired
     private MP3ServiceDbImpl mp3Service;
 
@@ -44,7 +48,36 @@ public class MP3Controller {
 
         return ResponseEntity.ok("Le fichier MP4 a été téléchargé avec succès : " + response);
     }
+    public static ClassPathResource getReloadableResource(String path) {
+        if (!resourceCache.containsKey(path)) {
+            ClassPathResource resource = new ClassPathResource(path);
+            resourceCache.put(path, resource);
+        }
+        return resourceCache.get(path);
+    }
 
+    public static void reloadResource(String path) throws IOException {
+        if (resourceCache.containsKey(path)) {
+            ClassPathResource oldResource = resourceCache.get(path);
+            ClassPathResource newResource = new ClassPathResource(path);
+            resourceCache.put(path, newResource);
+            oldResource.getInputStream().close(); // Close the old resource's stream
+        }
+    }
+    @GetMapping("/getMP3/{fileName}")
+    public ResponseEntity<Resource> getAudioFile(@PathVariable String fileName) throws IOException {
+        String filePath = "src/main/resources/MP3/" + fileName;
+
+        Resource resource = new FileSystemResource(filePath);
+
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                    .header("Content-Type", "audio/mpeg")
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @GetMapping("/{fileName}")
     public ResponseEntity<Resource> downloadMP3(@PathVariable String fileName) {
         try {

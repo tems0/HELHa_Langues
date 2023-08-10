@@ -6,10 +6,13 @@ import helha.tems.helha_langue.services.IQCMQuestionService;
 import helha.tems.helha_langue.services.IResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200/", allowedHeaders = "*")
@@ -67,6 +70,7 @@ public class QCMQuestionRestController {
         try {
             final QCMQuestion qcm = qcmService.findById(id);
             if (qcm != null) {
+                qcm.setQuestionNom(qcmQuestion.getQuestionNom());
                 return ResponseEntity.status(204).body(Optional.ofNullable(qcmService.update(id, qcmQuestion)));
             }
         } catch (Exception ex) {
@@ -75,8 +79,25 @@ public class QCMQuestionRestController {
         return  ResponseEntity.status(404).body(null);
     }
 
+    @PutMapping("/addResponse/{id}")
+    public ResponseEntity<?> addResponseToQcm(@PathVariable int id, @RequestBody Response response) {
+        try {
+            final QCMQuestion qcm = qcmService.findById(id);
+            if (qcm != null) {
+                response.setQcmQuestion(qcm);
+                qcm.getResponses().add(response);
+                qcmService.update(id, qcm);
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteQcm(@PathVariable int id)
+    public ResponseEntity<Map<String, Object>> deleteQcm(@PathVariable int id)
     {
         QCMQuestion qcm = qcmService.findById(id);
 
@@ -84,6 +105,8 @@ public class QCMQuestionRestController {
             return ResponseEntity.notFound().build();
         }
         qcmService.delete(qcm);
-        return ResponseEntity.ok("qcm deleted successfully.");
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", "qcm deleted successfully.");
+        return ResponseEntity.ok(res);
     }
 }

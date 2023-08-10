@@ -63,8 +63,9 @@ public class SequenceRestController {
         return  ResponseEntity.status(404).body(null);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Optional<Sequence>> updateSequence(@PathVariable int id, @RequestParam("file") MultipartFile file,
+    @PutMapping("/WithFile/{id}")
+    public ResponseEntity<Optional<Sequence>> updateSequenceWithFile(@PathVariable int id,
+                                                             @RequestParam("file") MultipartFile file,
                                                              @RequestParam("seq") String sequenceJson)
     {
         try {
@@ -81,6 +82,15 @@ public class SequenceRestController {
                     File fileseq = new File(seq.getAudioMP3());
                     // Obtenir le nom du fichier en utilisant la méthode getName()
                     String fileName = fileseq.getName();
+
+                    // Créer un objet File avec le chemin du fichier
+                    File fileseqVid = new File(seq.getVideoMP4());
+                    // Obtenir le nom du fichier en utilisant la méthode getName()
+                    String fileNameVid = fileseqVid.getName();
+
+
+                    mp4Service.deleteMP4(fileNameVid);
+
                     String response = mp3Service.updateMP3(fileName,file);
                     sequence.setAudioMP3(response);
                 } else if(file.getOriginalFilename().endsWith(".mp4")){
@@ -88,6 +98,14 @@ public class SequenceRestController {
                     File fileseq = new File(seq.getVideoMP4());
                     // Obtenir le nom du fichier en utilisant la méthode getName()
                     String fileName = fileseq.getName();
+
+                    // Créer un objet File avec le chemin du fichier
+                    File fileseqAud = new File(seq.getAudioMP3());
+                    // Obtenir le nom du fichier en utilisant la méthode getName()
+                    String fileNameAud = fileseqAud.getName();
+
+
+                    mp3Service.deleteMP3(fileNameAud);
                     String response = mp4Service.updateMP4(fileName,file);
                     sequence.setVideoMP4(response);
                 }
@@ -101,6 +119,26 @@ public class SequenceRestController {
         }
         return  ResponseEntity.status(404).body(null);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Optional<Sequence>> updateSequence(@PathVariable int id,
+                                                             @RequestParam("seq") String sequenceJson)
+    {
+        try {
+            //pour creer un objet sequence
+            ObjectMapper objectMapper = new ObjectMapper();
+            Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
+            final Sequence seq = sequenceService.findById(id);
+            sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
+            if (seq != null) {
+                return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, sequence)));
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(404).body(null);
+        }
+        return  ResponseEntity.status(404).body(null);
+    }
+
     @DeleteMapping ("/{id}")
     public ResponseEntity<String> deleteSequence(@PathVariable int id)
     {
@@ -116,7 +154,10 @@ public class SequenceRestController {
             String fileName = file.getName();
             String response = mp3Service.deleteMP3(fileName);
             if(!response.startsWith("src"))
+            {
+                sequenceService.delete(sequence);
                 return ResponseEntity.status(400).body(response);
+            }
             sequenceService.delete(sequence);
             return ResponseEntity.ok("Sequence and references deleted successfully.");
         } else if(sequence.getVideoMP4().endsWith(".mp4")){
@@ -126,11 +167,15 @@ public class SequenceRestController {
             String fileName = file.getName();
             String response = mp4Service.deleteMP4(fileName);
             if(!response.startsWith("src"))
+            {
+                sequenceService.delete(sequence);
                 return ResponseEntity.status(400).body(response);
+            }
             sequenceService.delete(sequence);
             return ResponseEntity.ok("Sequence and references deleted successfully.");
         }
         else{
+            sequenceService.delete(sequence);
             return ResponseEntity.notFound().build();
         }
     }

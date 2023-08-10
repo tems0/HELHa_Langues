@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:4200/", allowedHeaders = "*")
@@ -56,7 +58,9 @@ public class ResponseRestController {
         try {
             final Response rep = responseService.findById(id);
             if (rep != null) {
-                return ResponseEntity.status(204).body(Optional.ofNullable(responseService.update(id, response)));
+                rep.setResponse(response.getResponse());
+                rep.setResponseCorrect(response.getResponseCorrect());
+                return ResponseEntity.status(204).body(Optional.ofNullable(responseService.update(id, rep)));
             }
         } catch (Exception ex) {
             return ResponseEntity.status(404).body(null);
@@ -65,14 +69,16 @@ public class ResponseRestController {
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<String> deleteResponse(@PathVariable int id)
+    public ResponseEntity<Map<String, Object>> deleteResponse(@PathVariable int id)
     {
         Response response = responseService.findById(id);
 
         if (response == null) {
             return ResponseEntity.notFound().build();
         }
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", "response deleted successfully.");
         responseService.delete(response);
-        return ResponseEntity.ok("response deleted successfully.");
+        return ResponseEntity.ok(res);
     }
 }

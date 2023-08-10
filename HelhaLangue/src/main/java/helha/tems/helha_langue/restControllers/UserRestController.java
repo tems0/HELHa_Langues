@@ -144,7 +144,7 @@ public class UserRestController {
     }
 
     @PostMapping("/{email}/sequences")
-    public ResponseEntity<String> addSequenceToUser(@PathVariable String email,@RequestParam("file") MultipartFile file ,
+    public ResponseEntity<Map<String, Object>> addSequenceToUser(@PathVariable String email,@RequestParam("file") MultipartFile file ,
                                                    @RequestParam("seq") String sequenceJson) throws JsonProcessingException {
         // Recherche l'utilisateur existant par son email
         Optional<User> optionalUser = userService.findByEmail(email);
@@ -166,16 +166,22 @@ public class UserRestController {
             return ResponseEntity.notFound().build();
         }
         // Verification du import
-
+        Map<String, Object> res = new HashMap<>();
         if (file.getOriginalFilename().endsWith(".mp3")) {
             String response = mp3Service.uploadMP3(file);
-            if(!response.startsWith("src"))
-                return ResponseEntity.status(400).body(response);
+            if(!response.startsWith("src")) {
+                res.put("token", null);
+                res.put("message", response);
+                return ResponseEntity.status(400).body(res);
+            }
             sequence.setAudioMP3(response);
         } else if(file.getOriginalFilename().endsWith(".mp4")){
             String response = mp4Service.uploadMP4(file);
-            if(!response.startsWith("src"))
-                return ResponseEntity.status(400).body(response);
+            if(!response.startsWith("src")){
+                res.put("token", null);
+                res.put("message", response);
+                return ResponseEntity.status(400).body(res);
+            }
             sequence.setVideoMP4(response);
         }
         else{
@@ -186,7 +192,8 @@ public class UserRestController {
 
         // Enregistrez les modifications dans la base de données
         userService.saveUser(user);
-
-        return ResponseEntity.ok(user.toString());
+        res.put("token", null);
+        res.put("message", "sequence creer");
+        return ResponseEntity.ok(res);
     }
 }

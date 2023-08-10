@@ -2,18 +2,23 @@ package helha.tems.helha_langue.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -96,6 +101,20 @@ public class MP4Controller {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);
+        }
+    }
+    @GetMapping("/getMP4/{fileName}")
+    public ResponseEntity<Resource> getVideoFile(@PathVariable String fileName) {
+        String filePath = "src/main/resources/MP4/" + fileName;
+
+        Resource resource = new FileSystemResource(filePath);
+
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                    .header("Content-Type", "video/mp4")
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
