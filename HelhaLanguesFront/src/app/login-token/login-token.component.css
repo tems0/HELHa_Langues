@@ -98,34 +98,13 @@ input[type="password"] {
 
 .p-card-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   padding: 24px;
 }
+
 .p-card-containerProgress{
   display: flex;
   justify-content: center;
   padding: 24px;
 }
-
-/* Styles pour le header/navbar */
-.navbar {
-  background-color: #f8f9fa;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Styles pour le logo */
-.logo {
-  width: 50px;
-}
-
-/* Styles pour les liens du menu */
-.navbar a {
-  color: #333;
-  text-decoration: none;
-  margin-right: 20px;
-  font-size: 16px;
-}
-
 

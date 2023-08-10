@@ -1,0 +1,12 @@
+<div *ngIf="audioUrl" class="audio-player" class="player-container">
+  <audio controls>
+    <source [src]="audioUrl" type="audio/mpeg">
+    Votre navigateur ne supporte pas l'élément audio.
+  </audio>
+</div>
+<div *ngIf="videoBlobUrl" class="video-player" class="player-container">
+  <video controls>
+    <source [src]="videoBlobUrl" type="video/mp4">
+    Votre navigateur ne supporte pas l'élément vidéo.
+  </video>
+</div>

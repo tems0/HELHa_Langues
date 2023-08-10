@@ -1,0 +1,85 @@
+<p-toast></p-toast>
+<div class="p-d-flex p-jc-end p-ai-center p-h-100">
+  <div class="p-card-container">
+    <div class="p-card p-shadow-4">
+      <h2 class="p-text-center">Ajout d'une sequence</h2>
+
+      <form  (submit)="addSequence($event)" #formLogin class="p-fluid">
+
+        <div class="p-field">
+          <label for="token">la langue de la sequence</label>
+          <input
+          type="texte"
+          id="langue"
+          pInputText
+          required
+          name="langue"
+          #seqLangues
+          />
+        </div>
+        <div class="p-field">
+          <label for="token">le score de la sequence:</label>
+          <input
+          type="number"
+          id="score"
+          pInputText
+          required
+          name="score"
+          #seqscore
+          />
+        </div>
+        <div class="p-field">
+          <label for="token">le temps en minute de la sequence:</label>
+          <input
+          type="number"
+          id="token"
+          pInputText
+          required
+          name="token"
+          #seqtimer
+          />
+        </div>
+        <div class="p-field">
+          <span class="remarquable-span">vous ne pouvais choisir qu 'un type MP3 OU MP4</span>
+          <label for="token">choisisez votre audio:</label>
+          <p-fileUpload mode="basic"
+          name="demo[]"
+          url="https://www.primefaces.org/cdn/api/upload.php"
+          accept="audio/mpeg"
+          [maxFileSize]="50 * 1024 * 1024"
+          (onUpload)="onUpload($event)"
+          [auto]="true"
+          [disabled]="isUpload"
+          chooseLabel="MP3"
+          required
+          ></p-fileUpload>
+          <div *ngIf="isUpload">
+            Fichier importé : {{ uploadedFileName }}
+          </div>
+        </div>
+        <div class="p-field">
+          <label for="token">choisisez votre video:</label>
+          <p-fileUpload mode="basic"
+          name="demo[]"
+          url="https://www.primefaces.org/cdn/api/upload.php"
+          accept="video/mp4"
+          [maxFileSize]="50 * 1024 * 1024"
+          (onUpload)="onUpload($event)"
+          [auto]="true"
+          [disabled]="isUpload"
+          chooseLabel="MP4"
+          required
+          ></p-fileUpload>
+          <div *ngIf="isUpload">
+            Fichier importé : {{ uploadedFileName }}
+          </div>
+        </div>
+        <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+          <button classe=".p-card-container" pButton pRipple label="Ajouter la sequence"></button>
+          <div style="color: red; font-weight: bold;">
+            <p>{{ error }}</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>

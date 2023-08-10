@@ -1,0 +1,143 @@
+<div class="card" *ngIf="treeData.length > 0">
+  <p-treeTable [value]="treeData">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Label</th>
+        <th>Correct reponse</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body"  let-rowNode let-rowData="rowData" let-ri="rowIndex">
+      <tr [ttRow]="rowNode" [pEditableRow]="rowNode">
+        <td>
+          <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+          {{ rowNode.node.label }}</td>
+        <td>
+          {{ rowNode.node.responseCorrect }}
+        </td>
+        <td>
+          <button  *ngIf="rowNode.node.responseCorrect ==''" pButton pRipple type="button"  icon="pi pi-plus-circle"
+          (click)="newResponse(rowNode.node.id)"
+          class="p-button-rounded p-button-text p-button-success"></button>
+          <button  pButton pRipple type="button"  icon="pi pi-pencil"
+          (click)="updateQuestionResponse(rowNode.node.id,rowNode.node.id,rowNode.node.label,rowNode.node.responseCorrect)"
+          class="p-button-rounded p-button-text p-button-text"></button>
+          <button  pButton pRipple type="button"  icon="pi pi-trash"
+          (click)="deleteQuestionResponse(rowNode.node.id,rowNode.node.responseCorrect)"
+          class="p-button-rounded p-button-text p-button-danger"></button>
+
+        </td>
+      </tr>
+    </ng-template>
+  </p-treeTable>
+</div>
+
+<div *ngIf="editableQuestion" class="overlay-container">
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100 overlay-content">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">mise a jour de la question</h2>
+
+        <form (submit)="onSubmitQuestion($event)" #formLogin class="p-fluid">
+
+          <div class="p-field">
+            <label for="email">nom de la question</label>
+            <input
+            type="texte"
+            id="question"
+            pInputText
+            required
+            name="question"
+            #question
+            />
+          </div>
+          <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+            <div >
+              <button classe=".p-card-container" pButton pRipple label="Valider"></button>
+            </div>
+            <div style="color: red; font-weight: bold;">
+              <p></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+<div  *ngIf="editableResponse" class="overlay-container">
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100 overlay-content">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">mise a jour des reponses</h2>
+
+        <form (submit)="onSubmitReponse($event)" #formLogin class="p-fluid">
+
+          <div class="p-field">
+            <label for="reponse">nom de la reponse</label>
+            <input
+            type="texte"
+            id="reponse"
+            pInputText
+            required
+            name="reponse"
+            #reponse
+            />
+          </div>
+
+          <label for="tricheckbox" class="check">{{  value === false ? 'la reponse est fause' : 'la reponse est bonne' }}</label>
+          <p-checkbox  [binary]="true" inputId="binary" (onChange)="check($event)"></p-checkbox>
+
+          <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+            <div >
+              <button classe=".p-card-container" pButton pRipple label="Valider"></button>
+            </div>
+            <div style="color: red; font-weight: bold;">
+              <p></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div  *ngIf="addnewResponse" class="overlay-container">
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100 overlay-content">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">ajouter une nouvelle reponses</h2>
+
+        <form (submit)="onSubmitAddReponse($event)" #formLogin class="p-fluid">
+
+          <div class="p-field">
+            <label for="reponse">nom de la reponse</label>
+            <input
+            type="texte"
+            id="reponse"
+            pInputText
+            required
+            name="reponse"
+            #reponse2
+            />
+          </div>
+
+          <label for="tricheckbox" class="check">{{  value === false ? 'la reponse est fause' : 'la reponse est bonne' }}</label>
+          <p-checkbox  [binary]="true" inputId="binary" (onChange)="check($event)"></p-checkbox>
+
+          <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+            <div >
+              <button classe=".p-card-container" pButton pRipple label="Valider"></button>
+            </div>
+            <div style="color: red; font-weight: bold;">
+              <p></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

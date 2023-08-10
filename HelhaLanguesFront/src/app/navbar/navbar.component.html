@@ -1,1 +1,151 @@
-<p-button label="Submit"></p-button>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<header class="navbar">
+  <nav>
+    <div class="left-link">
+      <a routerLink="/list-recette">
+        <img [src]="'assets/512_x_512_-_PNG__3_-removebg-preview.png'" alt="Logo" class="logo">
+      </a>
+    </div>
+
+    <div class="middle-links" *ngIf="isStudent && isLogin">
+      <button class="nav-button" routerLink="/list-recette">etudiant</button>
+      <button class="nav-button" routerLink="/recette">Créer une recette</button>
+      <button class="nav-button" routerLink="/favoris">Mes favoris</button>
+      <button class="nav-button" routerLink="/mes-recettes">Mes recettes</button>
+    </div>
+    <div class="middle-links" *ngIf="!isStudent && isLogin">
+      <button class="nav-button" routerLink="/list-sequences">Liste des sequences</button>
+      <button class="nav-button" routerLink="/add-sequence">ajouter une sequence</button>
+      <button class="nav-button" routerLink="/">test</button>
+      <button class="nav-button" routerLink="/">a voir</button>
+    </div>
+
+
+    <div class="right-link">
+      <button class="nav-button" *ngIf="!isLogin"(click)="toggleRegisterPopup()">S'inscrire</button>
+      <button class="nav-button" *ngIf="!isLogin"(click)="toggleLoginPopup()">Se connecter</button>
+      <button class="nav-button" *ngIf="isLogin" (click)="Logout()">Se déconnecter</button>
+    </div>
+  </nav>
+
+</header>
+
+<div  *ngIf="showRegisterPopup">
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">Inscription</h2>
+        <form (submit)="onSubmit($event)" #form class="p-fluid">
+
+          <div class="p-inputgroup p-field">
+            <span class="p-inputgroup-addon">
+              <i class="pi pi-user"></i>
+            </span>
+            <input
+             id="lastname"
+             pInputText
+             name="lastname"
+             placeholder="Nom d'utilisateur"
+             required="true"
+             pattern="^[a-zA-Z]{4,}$"
+             title="au minimum 4 lettres"
+             #lastname
+             />
+          </div>
+
+          <div class="p-inputgroup p-field">
+            <span class="p-inputgroup-addon">
+              <i class="pi pi-user"></i>
+            </span>
+            <input
+             id="firstname"
+             pInputText
+             required
+             name="firstname"
+             placeholder="Prenom d'utilisateur"
+             pattern="^[a-zA-Z0-9]{4,}$"
+             title="au minimum 4 lettres"
+             #firstname
+             />
+          </div>
+
+          <div class="p-inputgroup p-field" *ngIf="isTeacher">
+            <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+            <input  id="email1" pInputText required name="email" placeholder="email"
+            pattern="^la\d{6}$"
+            title="L'email doit être au format 'la' suivi de six chiffres"
+            #email
+            />
+            <span class="p-inputgroup-addon">
+              @helha.be
+            </span>
+          </div>
+          <div class="p-inputgroup p-field" *ngIf="!isTeacher">
+            <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+            <input  id="email2" pInputText required name="email" placeholder="email"
+            pattern="^la\d{6}$"
+            title="L'email doit être au format 'la' suivi de six chiffres"
+            #email
+            />
+            <span class="p-inputgroup-addon">
+              @student.helha.be
+            </span>
+          </div>
+
+          <label for="tricheckbox" class="check">{{ value === false ? 'Vous etes un etudiant' : 'vous etes un professeur' }}</label>
+          <p-checkbox  [binary]="true" inputId="binary" (onChange)="check($event)"></p-checkbox>
+
+          <div class="p-d-flex p-jc-end" style="margin-top: 10px;">
+            <button  pButton pRipple label="S'inscrire"></button>
+            <div style="color: red; font-weight: bold;">
+              <p>{{ error }}</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div  *ngIf="showLoginPopup">
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">Connexion</h2>
+
+        <form (submit)="onSubmitLogin($event)" #formLogin class="p-fluid">
+
+          <div class="p-field">
+            <label for="email">Email</label>
+            <input
+            type="email"
+            id="email"
+            pInputText
+            required
+            pattern="^la\d{6}@(helha\.be|student\.helha\.be)$"
+            title="L'email doit être au format 'la' suivi de six chiffres, suivi de '@helha.be' ou '@student.helha.be'"
+            name="email"
+            #emailLogin
+            />
+          </div>
+
+          <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+            <div *ngIf="inProgress">
+              <p-progressSpinner class="p-card-containerProgress"></p-progressSpinner>
+            </div>
+            <div *ngIf="!inProgress">
+              <button classe=".p-card-container" pButton pRipple label="Se connecter"></button>
+            </div>
+            <div style="color: red; font-weight: bold;">
+              <p>{{ error }}</p>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>

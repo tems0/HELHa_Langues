@@ -1,0 +1,36 @@
+
+  <div class="p-d-flex p-jc-end p-ai-center p-h-100">
+    <div class="p-card-container">
+      <div class="p-card p-shadow-4">
+        <h2 class="p-text-center">Connexion via le token</h2>
+
+        <form  (submit)="onSubmitLogin($event)" #formLogin class="p-fluid">
+
+          <div class="p-field">
+            <label for="token">votre code de verification :</label>
+            <input
+            type="texte"
+            id="token"
+            pInputText
+            required
+            name="token"
+            #token
+            />
+          </div>
+
+          <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
+            <div *ngIf="inProgress">
+              <p-progressSpinner class="p-card-containerProgress"></p-progressSpinner>
+            </div>
+            <div *ngIf="!inProgress">
+              <button classe=".p-card-container" pButton pRipple label="Se connecter"></button>
+            </div>
+            <div style="color: red; font-weight: bold;">
+              <p>{{ error }}</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+

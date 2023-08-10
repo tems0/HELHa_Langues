@@ -1,3 +1,73 @@
 /* You can add global styles to this file, and also import other style files */
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+body {
+  margin: 0;
+  background: rgb(219,219,219);
+  background: linear-gradient(0deg, rgba(219,219,219,1) 0%, rgba(158,158,158,1) 75%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.navbar {
+  background: rgb(158,158,158);
+  background: linear-gradient(0deg, rgba(158,158,158,1) 0%, rgba(219,219,219,1) 100%);
+  padding: 5px;
+}
+
+.navbar nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .left-link {
+  display: flex;
+  align-items: center;
+  order: 1;
+}
+
+.navbar .left-link .logo {
+  width: 80px;
+  height: auto;
+  margin-right: 10px;
+}
+
+.navbar .middle-links {
+  order: 2;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.navbar .right-link {
+  order: 3;
+}
+
+.nav-button {
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.nav-button:hover {
+  background-color: rgb(233,213,171);
+  color: #fff;
+}
+
+/* Styles pour la navbar quand un étudiant est connecté */
+.student-navbar {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Styles pour la navbar quand un administrateur est connecté */
+.admin-navbar {
+  background-color: #28a745;
+  color: #fff;
+}

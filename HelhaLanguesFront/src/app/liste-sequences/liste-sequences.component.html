@@ -1,0 +1,193 @@
+<p-toast></p-toast>
+<div *ngIf="isStudent">
+  <div class="card">
+    <p-table
+    #dt1
+    [value]="sequences"
+    dataKey="sequenceId"
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 15]"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['languages', 'sequence.languages']">
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <p-dropdown id="langues"
+            [options]="distinctLanguages"
+            #pdrop
+            (onChange)="onLanguageChange($event)"
+            placeholder="filtre sur la langues" ></p-dropdown>
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+          <tr>
+              <th style="width:15%">langues</th>
+              <th style="width:15%">score</th>
+              <th style="width:15%">timer</th>
+              <th style="width:15%">score obtenu</th>
+              <th style="width:15%">suivie</th>
+              <th style="width:15%">Audio/Video</th>
+              <th style="width:10%"></th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-sequence let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="sequence">
+              <td>
+                {{sequence.languages}}
+              </td>
+              <td>
+                {{sequence.score}}
+              </td>
+              <td>
+                {{sequence.timer}}
+              </td>
+              <td>
+                {{sequence.scoreGot}}
+              </td>
+              <td>
+                {{ sequence.completed === true ? 'oui' : 'non' }}
+              </td>
+              <td>
+                {{ sequence.audioMP3 === "string" ? 'video' : 'audio' }}
+              </td>
+              <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                  <button pButton pRipple type="button" pInitEditableRow icon="pi pi-play" (click)="followSeq(sequence)" class="p-button-rounded p-button-text"></button>
+                </div>
+              </td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+<div *ngIf="!isStudent">
+  <div class="card">
+    <p-table
+    #dt1
+    [value]="sequences"
+    dataKey="sequenceId"
+    [rows]="5"
+    editMode="row"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 15]"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['languages', 'sequence.languages']">
+      <ng-template pTemplate="caption">
+        <div class="flex">
+          <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <p-dropdown id="langues"
+            [options]="distinctLanguages"
+            #pdrop
+            (onChange)="onLanguageChange($event)"
+            placeholder="filtre sur la langues" ></p-dropdown>
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+          <tr>
+              <th style="width:16%">langues</th>
+              <th style="width:16%">score</th>
+              <th style="width:16%">timer</th>
+              <th style="width:16%">audioMP3</th>
+              <th style="width:16%">videoMP4</th>
+              <th style="width:20%"></th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-sequence let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="sequence">
+              <td>
+                  <p-cellEditor>
+                      <ng-template pTemplate="input">
+                          <input pInputText type="text" required #seqLangues [value]="sequence.languages">
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                          {{sequence.languages}}
+                      </ng-template>
+                  </p-cellEditor>
+              </td>
+              <td>
+                  <p-cellEditor>
+                      <ng-template pTemplate="input">
+                          <input pInputText type="text" required #seqscore [value]="sequence.score">
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                          {{sequence.score}}
+                      </ng-template>
+                  </p-cellEditor>
+              </td>
+              <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text"  required #seqtimer [value]="sequence.timer">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{sequence.timer}}
+                    </ng-template>
+                  </p-cellEditor>
+              </td>
+              <td>
+                  <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-fileUpload mode="basic" chooseLabel="Choose" name="audio[]"
+                        url="https://www.primefaces.org/cdn/api/upload.php" accept="audio/mpeg"
+                        [maxFileSize]="50 * 1024 * 1024"
+                        (onUpload)="onUpload($event)"
+                        [auto]="true" [disabled]="isUpload"></p-fileUpload>
+                        <div>
+                          <ng-container *ngIf="sequence.audioMP3 != 'string'; else otherContent">
+                            Fichier importé : {{ sequence.audioMP3 }}
+                          </ng-container>
+                          <ng-template #otherContent>
+                            pas de fichier importé
+                          </ng-template>
+                        </div>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                          {{sequence.audioMP3}}
+                      </ng-template>
+                  </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <p-fileUpload mode="basic" chooseLabel="Choose" name="video[]"
+                      url="https://www.primefaces.org/cdn/api/upload.php" accept="video/mp4"
+                      [maxFileSize]="50 * 1024 * 1024" (onUpload)="onUpload($event)" [auto]="true"
+                      [disabled]="isUpload"></p-fileUpload>
+                      <div>
+                        <ng-container *ngIf="sequence.videoMP4 != 'string'; else otherContent">
+                          Fichier importé : {{ sequence.videoMP4 }}
+                        </ng-container>
+                        <ng-template #otherContent>
+                          pas de fichier importé
+                        </ng-template>
+                      </div>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{sequence.videoMP4}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+              <td>
+                  <div class="flex align-items-center justify-content-center gap-2">
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(sequence)" class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-question" (click)="addQuestion(sequence)" class="p-button-rounded p-button-text"></button>
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-info-circle" (click)="modifyQuestion(sequence)" class="p-button-rounded p-button-text p-button-warning"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(sequence)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(sequence, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-trash" (click)="onRowEditDelete(sequence, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                  </div>
+              </td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+
+

@@ -1,0 +1,45 @@
+<p-toast></p-toast>
+<div class="p-d-flex p-jc-end p-ai-center p-h-100">
+  <div class="p-card-container">
+    <div class="p-card p-shadow-4">
+      <h2 class="p-text-center">Ajout d'une question avec ses reponses</h2>
+
+      <form  (submit)="addQuestion($event)" #formLogin class="p-fluid">
+
+        <div class="p-field">
+          <label for="question">Nom de la question</label>
+          <input
+          type="texte"
+          id="question"
+          pInputText
+          required
+          name="question"
+          #questionName
+          />
+        </div>
+
+        <div *ngFor="let answer of answers; let i = index" class="p-field">
+          <label for="answer{{ i }}">Réponse {{ i + 1 }}</label>
+          <input
+            type="text"
+            id="answer{{ i }}"
+            pInputText
+            required
+            [name]="'answer' + i"
+            #responseName
+            [value]="answer"
+            style="margin-bottom: 5px;"
+          />
+          bonne reponse: <p-checkbox  [id]="'checkbox' + i" [name]="'checkbox' + i"
+          [binary]="true"
+          inputId="binary"></p-checkbox>
+        </div>
+
+        <button pButton type="button" (click)="addAnswer()" label="Ajouter une réponse" style="margin-bottom: 10px;"></button>
+
+        <button pButton type="submit" label="Ajouter la question"></button>
+
+      </form>
+    </div>
+  </div>
+
