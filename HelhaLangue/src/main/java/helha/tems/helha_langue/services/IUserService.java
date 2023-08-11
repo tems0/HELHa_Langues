@@ -11,7 +11,6 @@ public interface IUserService {
     public List<User> findAll();
     public List<User> findAllTeachers();
     public List<User> findAllStudents();
-    public User save(User newUser);
     User saveUser(User newUser);
     public Optional<User> findByEmail(String email);
 }

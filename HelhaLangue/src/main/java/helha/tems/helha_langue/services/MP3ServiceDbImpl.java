@@ -1,5 +1,7 @@
 package helha.tems.helha_langue.services;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
+@Getter
+@Setter
 public class MP3ServiceDbImpl implements IMP3Service{
 
     @Value("${mp3.upload.directory}")
     private String uploadDirectory; // Chemin du répertoire où les fichiers MP3 seront stockés
 
-    // Limite de la taille du fichier en bytes (10 Mo)
+    // Limite de la taille du fichier en bytes (50 Mo)
     private static final long MAX_FILE_SIZE = 50 * 1024 * 1024;
 
     @Override

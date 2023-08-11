@@ -1,5 +1,7 @@
 package helha.tems.helha_langue.services;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
+@Getter
+@Setter
 public class MP4ServiceDbImpl implements IMP4Service{
 
     @Value("${mp4.upload.directory}")
-    private String uploadDirectory; // Chemin du répertoire où les fichiers MP4 seront stockés
+    String uploadDirectory; // Chemin du répertoire où les fichiers MP4 seront stockés
 
     // Limite de la taille du fichier en bytes (50 Mo)
     private static final long MAX_FILE_SIZE = 50 * 1024 * 1024;

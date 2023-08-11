@@ -31,10 +31,6 @@ public class UserServiceDbImpl implements IUserService {
         return  userRepo.findAllStudents();
     }
 
-    @Override
-    public User save(User newUser) {
-        return null;
-    }
 
     @Override
     public User saveUser(User newUser) {
