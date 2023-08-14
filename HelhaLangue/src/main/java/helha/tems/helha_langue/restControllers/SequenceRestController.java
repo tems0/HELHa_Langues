@@ -74,6 +74,7 @@ public class SequenceRestController {
             Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
             final Sequence seq = sequenceService.findById(id);
             sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
+            sequence.setQcmQuestions(seq.getQcmQuestions());
             if (seq != null) {
                 // Verification du import
 
@@ -129,6 +130,8 @@ public class SequenceRestController {
             ObjectMapper objectMapper = new ObjectMapper();
             Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
             final Sequence seq = sequenceService.findById(id);
+            sequence.setAudioMP3(seq.getAudioMP3());
+            sequence.setVideoMP4(seq.getVideoMP4());
             sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
             if (seq != null) {
                 return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, sequence)));

@@ -121,9 +121,17 @@ public class UserRestController {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<User> post(@RequestBody User newUser){
+    public ResponseEntity<Map<String, Object>> post(@RequestBody User newUser){
         // Convertir l'email en minuscules (au cas où l'utilisateur aurait entré l'email en majuscules)
         newUser.setEmail(newUser.getEmail().toLowerCase());
+        Optional<User> optionalUser = userService.findByEmail(newUser.getEmail().toLowerCase());
+        Map<String, Object> response = new HashMap<>();
+
+        // Vérifie si l'utilisateur existe
+        if (!optionalUser.isEmpty()) {
+            response.put("message", "Adresse email deja existante.");
+            return ResponseEntity.status(400).body(response);
+        }
         // Vérifier si l'email se termine par "student.helha.be"
         if (newUser.getEmail().endsWith("student.helha.be")) {
             newUser.setEst_professeur("STUDENT");
@@ -132,7 +140,8 @@ public class UserRestController {
             student.setLastName(newUser.getLastName());
             student.setFirstName(newUser.getFirstName());
             userService.saveUser(student); // Enregistrez l'étudiant dans la base de données
-            return ResponseEntity.ok(student);
+            response.put("message", "Compte créé.");
+            return ResponseEntity.ok(response);
         } else if(newUser.getEmail().endsWith("helha.be")){
             newUser.setEst_professeur("TEACHER");
             newUser.setEst_professeur("TEACHER");
@@ -141,7 +150,8 @@ public class UserRestController {
             teacher.setLastName(newUser.getLastName());
             teacher.setFirstName(newUser.getFirstName());
             userService.saveUser(teacher);
-            return ResponseEntity.ok(teacher);
+            response.put("message", "Compte créé.");
+            return ResponseEntity.ok(response);
         }
         else{
             return ResponseEntity.notFound().build();
