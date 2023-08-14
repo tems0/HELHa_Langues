@@ -90,7 +90,11 @@ export class QcmComponent implements OnInit {
         }
       }
       if(cpt==this.questions[i].responses.filter(response => response.responseCorrect === true).length)
-      point++;
+      {
+        point++;
+        console.log(cpt);
+      }
+
     }
     if(point <0)
       point=0;

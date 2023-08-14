@@ -126,7 +126,7 @@ export class ListeSequencesComponent implements OnInit{
     console.log(updatedSequence);
     let email=sessionStorage.getItem("email");
     // Appeler le service pour ajouter les séquences
-    if(this.uploadedFiles==null)
+    if(this.uploadedFiles!=null)
     {
       this.sequenceService.updateSequenceWithFile(sequence.sequenceId,this.uploadedFiles!,sequenceJson).subscribe({
         next: (data) => {

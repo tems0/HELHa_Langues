@@ -39,6 +39,17 @@ export class ModifyQuestionComponent implements OnInit{
     this.sequenceService.getSequence(this.sequenceId).subscribe({
       next: (data) => {
         this.sequence = data;
+        this.sequence.qcmQuestions.sort((a: Qcmquestion, b: Qcmquestion) => {
+          const nameA = a.questionNom.toLowerCase(); // Convertir en minuscules pour un tri insensible à la casse
+          const nameB = b.questionNom.toLowerCase();
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          return 0;
+        });
         this.buildTreeData();
         console.log(data);
       },
@@ -108,6 +119,12 @@ export class ModifyQuestionComponent implements OnInit{
     }
   }
 
+  retour()
+  {
+    this.editableQuestion=false;
+    this.editableResponse=false;
+    this.addnewResponse=false;
+  }
   newResponse(i:number)
   {
     this.addnewResponse = !this.addnewResponse;

@@ -11,6 +11,7 @@ export class AddSequenceComponent implements OnInit{
 
   error:string="";
   isUpload:boolean=false;
+  inProgress:boolean=true;
   uploadedFiles: File | null = null;
   uploadedFileName!: string ;
 
@@ -33,11 +34,13 @@ export class AddSequenceComponent implements OnInit{
     console.log(this.uploadedFileName);
     this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
     this.isUpload=true;
+    this.inProgress=false;
   }
 
   addSequence(event:Event)
   {
     event.preventDefault();
+
     this.error="";
     const seqLangues = this.seqLanguesInput?.nativeElement.value;
     const seqtimer = this.seqtimerInput?.nativeElement.value;

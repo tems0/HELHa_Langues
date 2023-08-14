@@ -32,6 +32,53 @@
   </p-treeTable>
 </div>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accès Interdit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #e74c3c;
+    }
+
+    p {
+      color: #333;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" *ngIf="treeData.length == 0">
+    <h1>Pas de Question</h1>
+    <p>Veillez ajouter au moins une question pour la voir afficher.</p>
+  </div>
+</body>
+</html>
+
+
+
+
 <div *ngIf="editableQuestion" class="overlay-container">
   <div class="p-d-flex p-jc-end p-ai-center p-h-100 overlay-content">
     <div class="p-card-container">
@@ -54,6 +101,9 @@
           <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
             <div >
               <button classe=".p-card-container" pButton pRipple label="Valider"></button>
+            </div>
+            <div style="margin-top: 10px;">
+              <p-button label="Retour" (click)="retour()" styleClass="p-button-raised p-button-danger"></p-button>
             </div>
             <div style="color: red; font-weight: bold;">
               <p></p>
@@ -95,6 +145,9 @@
             <div >
               <button classe=".p-card-container" pButton pRipple label="Valider"></button>
             </div>
+            <div style="margin-top: 10px;">
+              <p-button label="Retour" (click)="retour()" styleClass="p-button-raised p-button-danger"></p-button>
+            </div>
             <div style="color: red; font-weight: bold;">
               <p></p>
             </div>
@@ -131,6 +184,9 @@
           <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
             <div >
               <button classe=".p-card-container" pButton pRipple label="Valider"></button>
+            </div>
+            <div style="margin-top: 10px;">
+              <p-button label="Retour" (click)="retour()" styleClass="p-button-raised p-button-danger"></p-button>
             </div>
             <div style="color: red; font-weight: bold;">
               <p></p>

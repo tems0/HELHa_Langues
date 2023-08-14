@@ -65,7 +65,9 @@
           </div>
         </div>
         <div class="p-d-flex p-jc-center p-ai-center " style="margin-top: 10px;">
-          <button classe=".p-card-container" pButton pRipple label="Ajouter la sequence"></button>
+
+          <button classe=".p-card-container" [disabled]="inProgress" pButton pRipple label="Ajouter la sequence"></button>
+
           <div style="color: red; font-weight: bold;">
             <p>{{ error }}</p>
           </div>

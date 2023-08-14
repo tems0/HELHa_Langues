@@ -114,7 +114,7 @@
               <td>
                   <p-cellEditor>
                       <ng-template pTemplate="input">
-                          <input pInputText type="text" required #seqscore [value]="sequence.score">
+                          <input pInputText type="text" [disabled]="true" required #seqscore [value]="sequence.score">
                       </ng-template>
                       <ng-template pTemplate="output">
                           {{sequence.score}}
@@ -124,7 +124,7 @@
               <td>
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                        <input pInputText type="text"  required #seqtimer [value]="sequence.timer">
+                        <input pInputText type="number"  required #seqtimer [value]="sequence.timer">
                     </ng-template>
                     <ng-template pTemplate="output">
                         {{sequence.timer}}
@@ -149,7 +149,12 @@
                         </div>
                       </ng-template>
                       <ng-template pTemplate="output">
-                          {{sequence.audioMP3}}
+                        <ng-container *ngIf="sequence.audioMP3 != 'string'; else otherContent">
+                          Fichier importé : {{ sequence.audioMP3 }}
+                        </ng-container>
+                        <ng-template #otherContent>
+                          pas de fichier importé
+                        </ng-template>
                       </ng-template>
                   </p-cellEditor>
               </td>
@@ -170,7 +175,12 @@
                       </div>
                     </ng-template>
                     <ng-template pTemplate="output">
-                        {{sequence.videoMP4}}
+                      <ng-container *ngIf="sequence.videoMP4 != 'string'; else otherContent">
+                        Fichier importé : {{ sequence.videoMP4 }}
+                      </ng-container>
+                      <ng-template #otherContent>
+                        pas de fichier importé
+                      </ng-template>
                     </ng-template>
                 </p-cellEditor>
             </td>

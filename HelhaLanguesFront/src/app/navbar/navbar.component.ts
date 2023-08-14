@@ -94,11 +94,18 @@ export class NavbarComponent implements OnInit {
     console.log(this.user);
     this.connexionService.register(this.user).subscribe({
       next: (data) => {
-        console.log(data);
+        if(data.message=="Adresse email deja existante.")
+          this.error="Adresse email deja existante.";
+        else if (data.message=="Compte créé.")
+          location.replace("/home")
     },
     error: (err) => {
-      console.log(err);
-      this.error=err.message;
+      if(err.error.message=="Adresse email deja existante.")
+          this.error="Adresse email deja existante.";
+      else{
+        this.error=err.message;
+      }
+      console.log(err.error.message);
       console.log(this.error);
     }
     });

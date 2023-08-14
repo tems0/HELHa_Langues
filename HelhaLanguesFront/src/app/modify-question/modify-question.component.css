@@ -109,7 +109,7 @@ input[type="password"] {
 
 
 .overlay-container {
-  position: relative;
+  position: unset;
 }
 
 .overlay-content {
