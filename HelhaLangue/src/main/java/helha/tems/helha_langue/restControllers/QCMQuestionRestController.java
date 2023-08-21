@@ -71,7 +71,7 @@ public class QCMQuestionRestController {
             final QCMQuestion qcm = qcmService.findById(id);
             if (qcm != null) {
                 qcm.setQuestionNom(qcmQuestion.getQuestionNom());
-                return ResponseEntity.status(204).body(Optional.ofNullable(qcmService.update(id, qcmQuestion)));
+                return ResponseEntity.status(204).body(Optional.ofNullable(qcmService.update(id, qcm)));
             }
         } catch (Exception ex) {
             return ResponseEntity.status(404).body(null);
