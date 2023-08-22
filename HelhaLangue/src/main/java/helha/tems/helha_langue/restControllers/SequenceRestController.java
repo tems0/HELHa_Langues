@@ -73,8 +73,8 @@ public class SequenceRestController {
             ObjectMapper objectMapper = new ObjectMapper();
             Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
             final Sequence seq = sequenceService.findById(id);
-            sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
-            sequence.setQcmQuestions(seq.getQcmQuestions());
+            seq.setLanguages(sequence.getLanguages());//pour faire un update au lieu d'un create
+            seq.setTimer(sequence.getTimer());
             if (seq != null) {
                 // Verification du import
 
@@ -93,7 +93,7 @@ public class SequenceRestController {
                     mp4Service.deleteMP4(fileNameVid);
 
                     String response = mp3Service.updateMP3(fileName,file);
-                    sequence.setAudioMP3(response);
+                    seq.setAudioMP3(response);
                 } else if(file.getOriginalFilename().endsWith(".mp4")){
                     // Créer un objet File avec le chemin du fichier
                     File fileseq = new File(seq.getVideoMP4());
@@ -108,12 +108,12 @@ public class SequenceRestController {
 
                     mp3Service.deleteMP3(fileNameAud);
                     String response = mp4Service.updateMP4(fileName,file);
-                    sequence.setVideoMP4(response);
+                    seq.setVideoMP4(response);
                 }
                 else{
                     return ResponseEntity.notFound().build();
                 }
-                return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, sequence)));
+                return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, seq)));
             }
         } catch (Exception ex) {
             return ResponseEntity.status(404).body(null);
@@ -130,11 +130,11 @@ public class SequenceRestController {
             ObjectMapper objectMapper = new ObjectMapper();
             Sequence sequence = objectMapper.readValue(sequenceJson, Sequence.class);
             final Sequence seq = sequenceService.findById(id);
-            sequence.setAudioMP3(seq.getAudioMP3());
-            sequence.setVideoMP4(seq.getVideoMP4());
+            seq.setLanguages(sequence.getLanguages());//pour faire un update au lieu d'un create
+            seq.setTimer(sequence.getTimer());
             sequence.setSequenceId(seq.getSequenceId());//pour faire un update au lieu d'un create
             if (seq != null) {
-                return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, sequence)));
+                return ResponseEntity.status(204).body(Optional.ofNullable(sequenceService.update(id, seq)));
             }
         } catch (Exception ex) {
             return ResponseEntity.status(404).body(null);
